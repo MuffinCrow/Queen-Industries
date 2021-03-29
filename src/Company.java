@@ -110,14 +110,14 @@ public class Company {
             director.hire(insideSalesManager);
             director.hire(outsideSalesManager);
 
-            Employee insideSalesEmployee1 = new Employee(105000, "Emilko Queen", "Marketing", "Inside Sales Reprsentative III");
-            Employee insideSalesEmployee2 = new Employee(90000, "Mia Smoak", "Marketing", "Inside Sales Representative II");
+            Employee insideSalesEmployee1 = new Employee(105000, "Emilko Queen", "Sales", "Inside Sales Reprsentative III");
+            Employee insideSalesEmployee2 = new Employee(90000, "Mia Smoak", "Sales", "Inside Sales Representative II");
 
             insideSalesManager.hire(insideSalesEmployee1);
             insideSalesManager.hire(insideSalesEmployee2);
 
-            Employee outsideSalesEmployee1 = new Employee(110000, "William Clayton", "Marketing", "Outside Sales Representative III");
-            Employee outsideSalesEmployee2 = new Employee(95000, "Connor Hawke", "Marketing", "Outside Sales Representative II");
+            Employee outsideSalesEmployee1 = new Employee(110000, "William Clayton", "Sales", "Outside Sales Representative III");
+            Employee outsideSalesEmployee2 = new Employee(95000, "Connor Hawke", "Sales", "Outside Sales Representative II");
 
             outsideSalesManager.hire(outsideSalesEmployee1);
             outsideSalesManager.hire(outsideSalesEmployee2);
@@ -200,6 +200,74 @@ public class Company {
             director1.adjustSalary(10000, manager2);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void printOrganizationChart() {
+        System.out.println("\n" + this.name + " Organization Chart");
+        for (Employee d : this.staff) {
+            System.out.println(" - " + d.getName() + ", " + d.getTitle());
+            if (((Manager) d).getReports() != null) {
+                for (Employee m : ((Manager) d).getReports()) {
+                    System.out.println("    - " + m.getName() + ", " + m.getTitle());
+                    if (((Manager) m).getReports() != null) {
+                        for (Employee e : ((Manager) m).getReports()) {
+                            System.out.println("       - " + e.getName() + ", " + e.getTitle());
+                        }
+                    }
+                }
+            }
+        }
+        System.out.print("\n");
+    }
+
+    private Director getDirector(String department) {
+        for (Employee d : this.staff) {
+            if (d.getDepartment().equals(department)) {
+                return ((Director) d);
+            }
+        }
+        return null;
+    }
+
+    private Employee getEmployee(String name) {
+        for (Employee d : this.staff) {
+            if (d.getName().equals(name)) {
+                return d;
+            } else if (((Manager) d).getReports() != null) {
+                for (Employee m : ((Manager) d).getReports()) {
+                    if (m.getName().equals(name)) {
+                        return m;
+                    } else if (((Manager) m).getReports() != null) {
+                        for (Employee e : ((Manager) m).getReports()) {
+                            if (e.getName().equals(name)) {
+                                return e;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void printEmployeeDetails(Employee e) {
+        System.out.println("Employee     : " + e.getName());
+        System.out.println("Department   : " + e.getDepartment());
+        System.out.println("Title        : " + e.getTitle());
+        switch (e.getTier()) {
+            case 1:
+                System.out.println("Compensation : " + Double.valueOf(e.getSalary()) + "\n");
+                break;
+            case 2:
+                System.out.println("Compensation : " + (Double.valueOf(e.getSalary()) + Double.valueOf(((Manager) e).getBonus())) + "\n");
+                break;
+            case 3:
+                System.out.println("Compensation : " + (Double.valueOf(e.getSalary()) + Double.valueOf(((Manager) e).getBonus()) + Double.valueOf(((Director) e).getStock())) + "\n");
+                break;
+            default:
+                System.out.println("Compensation : " + Double.valueOf(e.getSalary()) + "\n");
+                break;
         }
     }
 
